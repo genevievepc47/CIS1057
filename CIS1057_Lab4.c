@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-<<<<<<< HEAD
-=======
-
->>>>>>> d8264e052b6eb994ba7cc55fe254fab4508037ac
 /*
  * Author:     Yakir Lebovits
  * Class:      CIS 1057
@@ -42,7 +38,6 @@ int main(void)
             matched = play_slot();
 
             // check which match occurred, and increment its counter
-<<<<<<< HEAD
             if (matched == 3)
             {
                 matched_three++;
@@ -52,10 +47,6 @@ int main(void)
             {
                 matched_two++;
             }
-=======
-            if (matched == 3) matched_three++;
-            else if (matched == 2) matched_two++;
->>>>>>> d8264e052b6eb994ba7cc55fe254fab4508037ac
 
         }
 
@@ -79,11 +70,7 @@ int get_random_number(int max)
     return ((rand() % max) + 1);
 }
 
-<<<<<<< HEAD
 // gets three random numbers and checksS them for matches
-=======
-// gets three random numbers and checks them for matches
->>>>>>> d8264e052b6eb994ba7cc55fe254fab4508037ac
 // returns a code corresponding to the number of numbers which matched
 int play_slot(void)
 {
