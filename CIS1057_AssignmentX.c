@@ -23,7 +23,7 @@ char rand_char(void);
 void generate_grid(char grid[GRIDSIZE][GRIDSIZE], int size);
 void print_grid(char grid[GRIDSIZE][GRIDSIZE], int size);
 int find_initial_point(char grid[][GRIDSIZE], char tgt_str[], int size, int rows[], int columns[]);
-int search_for_string(char grid[][GRIDSIZE], char tgt_str[], int size, int rows[], int columns[], int row, int col, int mov_row, int mov_col);
+int search_for_string(char grid[][GRIDSIZE], char tgt_str[], int rows[], int columns[], int row, int col, int coord_pos);
 
 
 int main(void)
@@ -106,16 +106,7 @@ int find_initial_point(char grid[][GRIDSIZE], char tgt_str[], int size, int rows
         {
             if (grid[row][column] == tgt_str[0])
             {
-                if (search_for_string(grid, tgt_str, size, rows, columns, row,  column, 0, 1)) // look right
-                    return 1;
-
-                if (search_for_string(grid, tgt_str, size, rows, columns, row,  column, 0, -1)) // look left
-                    return 1;
-
-                if (search_for_string(grid, tgt_str, size, rows, columns, row,  column, 1, 0)) // look up
-                    return 1;
-
-                if (search_for_string(grid, tgt_str, size, rows, columns, row,  column, -1, 0)) // look down
+                if (search_for_string(grid, tgt_str, rows, columns, row,  column, 0))
                     return 1;
             }
         }
@@ -123,45 +114,28 @@ int find_initial_point(char grid[][GRIDSIZE], char tgt_str[], int size, int rows
     return 0;
 }
 
-/* takes an initial coordinate and looks in a given direction for the rest of the word.
- * mov_row and mov_col specify which direction to look in */
-int search_for_string(char grid[][GRIDSIZE], char tgt_str[], int size, int rows[], int columns[], int row, int col, int mov_row, int mov_col)
+// once initial point is found, search surrounding nodes
+int search_for_string(char grid[][GRIDSIZE], char tgt_str[], int rows[], int columns[], int row, int col, int pos)
 {
-    int coord_pos = 1; /* where to place next coordinate in rows and columns arrays */
+    // update coordinates of found work
+    rows[pos] = row;
+    columns[pos] = col;
 
-    /* first coordinates will always be the initial coordinate*/
-    rows[0] = row;
-    columns[0] = col;
-
-    // if string is a single character
-    if (strlen(tgt_str) == 1)
-    {
-        rows[0] = row;
-        columns[0] = col;
-        return 1;
-    }
-
-
-    for (int x = 1; x < strlen(tgt_str); ++x)
-    {
-        row += mov_row;
-        col += mov_col;
-
-        /* out of bounds */
-        if ((row < 0) || (row >= size) || (col < 0) || (col >= size))
+    // out of bounds
+    if (row > GRIDSIZE || row < 0 || col > GRIDSIZE || col < 0)
             return 0;
 
-        /* break if the next item in the grid isn't the next char in the string */
-        if (grid[row][col] != tgt_str[x])
-        {
+    // if doesnt match
+    if (grid[row][col] != tgt_str[pos])
             return 0;
-        }
 
-        /* record coordinates of matching char */
-        rows[coord_pos] = row;
-        columns[coord_pos++] = col;
-    }
+    // reached end of string
+    if (strlen(tgt_str) == pos + 1)
+            return 1;
 
-    /* assume we found the string unless proven otherwise */
-    return 1;
+    // recurse for each node surrounding the current node
+    if (search_for_string(grid, tgt_str, rows, columns, row + 1, col, pos + 1)) return 1;
+    if (search_for_string(grid, tgt_str, rows, columns, row - 1, col, pos + 1)) return 1;
+    if (search_for_string(grid, tgt_str, rows, columns, row, col + 1, pos + 1)) return 1;
+    if (search_for_string(grid, tgt_str, rows, columns, row, col - 1, pos + 1)) return 1;
 }
